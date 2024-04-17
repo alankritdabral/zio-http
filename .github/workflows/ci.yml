@@ -23,7 +23,7 @@ jobs:
     name: Build and Test
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.12.18, 2.13.12, 3.3.1]
         java: [graal_graalvm@17, temurin@8]
     runs-on: ${{ matrix.os }}
@@ -213,7 +213,7 @@ jobs:
     name: Jmh CookieDecodeBenchmark
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -265,7 +265,7 @@ jobs:
     name: Jmh EndpointBenchmark
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -317,7 +317,7 @@ jobs:
     name: Jmh HttpCollectEval
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -369,7 +369,7 @@ jobs:
     name: Jmh HttpCombineEval
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -421,7 +421,7 @@ jobs:
     name: Jmh HttpNestedFlatMapEval
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -473,7 +473,7 @@ jobs:
     name: Jmh HttpRouteTextPerf
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -525,7 +525,7 @@ jobs:
     name: Jmh ProbeContentTypeBenchmark
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -577,7 +577,7 @@ jobs:
     name: Jmh SchemeDecodeBenchmark
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -629,7 +629,7 @@ jobs:
     name: Jmh ServerInboundHandlerBenchmark
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -681,7 +681,7 @@ jobs:
     name: Jmh UtilBenchmark
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.12]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -735,7 +735,7 @@ jobs:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main'  }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.10]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
@@ -835,7 +835,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [self-hosted]
         scala: [2.13.10]
         java: [temurin@8]
     runs-on: ${{ matrix.os }}
