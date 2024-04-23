@@ -6,50 +6,73 @@
 
 ZIO HTTP is a scala library for building http apps. It is powered by ZIO and [Netty](https://netty.io/) and aims at being the defacto solution for writing, highly scalable and performant web applications using idiomatic Scala.
 
-[![Development](https://img.shields.io/badge/Project%20Stage-Development-green.svg)](https://github.com/zio/zio/wiki/Project-Stages) ![CI Badge](https://github.com/zio/zio-http/workflows/Continuous%20Integration/badge.svg) [![Sonatype Releases](https://img.shields.io/nexus/r/https/oss.sonatype.org/dev.zio/zio-http_2.13.svg?label=Sonatype%20Release)](https://oss.sonatype.org/content/repositories/releases/dev/zio/zio-http_2.13/) [![Sonatype Snapshots](https://img.shields.io/nexus/s/https/oss.sonatype.org/dev.zio/zio-http_2.13.svg?label=Sonatype%20Snapshot)](https://oss.sonatype.org/content/repositories/snapshots/dev/zio/zio-http_2.13/) [![javadoc](https://javadoc.io/badge2/dev.zio/zio-http-docs_2.13/javadoc.svg)](https://javadoc.io/doc/dev.zio/zio-http-docs_2.13) [![ZIO Http](https://img.shields.io/github/stars/zio/zio-http?style=social)](https://github.com/zio/zio-http)
+[![Development](https://img.shields.io/badge/Project%20Stage-Development-green.svg)](https://github.com/zio/zio/wiki/Project-Stages) ![CI Badge](https://github.com/zio/zio-http/workflows/Continuous%20Integration/badge.svg) [![Sonatype Snapshots](https://img.shields.io/nexus/s/https/oss.sonatype.org/dev.zio/zio-http_2.13.svg?label=Sonatype%20Snapshot)](https://oss.sonatype.org/content/repositories/snapshots/dev/zio/zio-http_2.13/) [![ZIO Http](https://img.shields.io/github/stars/zio/zio-http?style=social)](https://github.com/zio/zio-http)
 
 ## Installation
 
 Setup via `build.sbt`:
 
 ```scala
-libraryDependencies += "dev.zio" %% "zio-http" % "3.0.0-RC6"
+libraryDependencies += "dev.zio" %% "zio-http" % "<version>"
 ```
 
 **NOTES ON VERSIONING:**
 
-- Older library versions `1.x` or `2.x` with organization `io.d11` of ZIO Http are derived from Dream11, the organization that donated ZIO Http to the ZIO organization in 2022. 
-- Newer library versions, starting in 2023 and resulting from the ZIO organization (`dev.zio`) started with `0.0.x`, reaching `1.0.0` release candidates in April of 2023
+- Older library versions `1.x` or `2.x` with organization `io.d11` of ZIO Http are derived from Dream11, the organization that donated ZIO Http to the ZIO organization in 2022.
+- Newer library versions, starting in 2023 and resulting from the [ZIO organization](https://dev.zio) started with `0.0.x`, reaching `1.0.0` release candidates in April of 2023
 
 ## Getting Started
 
-A simple Http server can be built using a few lines of code.
+ZIO HTTP provides a simple and expressive API for building HTTP applications. It supports both server and client-side APIs. 
+
+ZIO HTTP‌ is designed in terms of **HTTP as function**, where both server and client are a function from `Request` to `Response`.
+
+### Greeting Server
+
+The following example demonstrates how to build a simple greeting server that responds with a greeting message based on the query parameter `name`.
 
 ```scala
 import zio._
 import zio.http._
 
-object HelloWorld extends ZIOAppDefault {
-
-  val app: HttpApp[Any] = 
+object GreetingServer extends ZIOAppDefault {
+  val app =
     Routes(
-      Method.GET / "text" -> handler(Response.text("Hello World!"))
+      Method.GET / "greet" -> handler { (req: Request) =>
+        val name = req.queryParamToOrElse("name", "World")
+        Response.text(s"Hello $name!")
+      }
     ).toHttpApp
 
-  override val run =
-    Server.serve(app).provide(Server.default)
+  def run = Server.serve(app).provide(Server.default)
 }
 ```
 
-## Steps to run an example
+### Greeting Client
 
-1. Edit the [RunSettings](https://github.com/zio/zio-http/blob/main/project/BuildHelper.scala#L107) - modify `className` to the example you'd like to run.
-2. From sbt shell, run `~example/reStart`. You should see `Server started on port: 8080`.
-3. Send curl request for defined `http Routes`, for eg : `curl -i "http://localhost:8080/text"` for `example.HelloWorld`.
+The following example demonstrates how to call the greeting server using the ZIO HTTP client:
+
+```scala
+import zio._
+import zio.http._
+
+object GreetingClient extends ZIOAppDefault {
+
+  val app =
+    for {
+      client   <- ZIO.serviceWith[Client](_.host("localhost").port(8080))
+      request  =  Request.get("greet").addQueryParam("name", "John")
+      response <- client.request(request)
+      _        <- response.body.asString.debug("Response")
+    } yield ()
+
+  def run = app.provide(Client.default, Scope.default)
+}
+```
 
 ## Watch Mode
 
-You can use the [sbt-revolver] plugin to start the server and run it in watch mode using `~ reStart` command on the SBT console.
+We can use the [sbt-revolver] plugin to start the server and run it in watch mode using `~ reStart` command on the SBT console.
 
 [sbt-revolver]: https://github.com/spray/sbt-revolver
 
